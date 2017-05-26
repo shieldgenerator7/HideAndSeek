@@ -71,7 +71,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1960774710303452}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.94, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4467187259971174}
@@ -240,6 +240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 3
   rotSpeed: 100
+  jumpForce: 200
   cameraPrefab: {fileID: 1620561361524654, guid: f5c7f7f044a647a4aa2200253adc711e,
     type: 2}
 --- !u!114 &114338022097394730
