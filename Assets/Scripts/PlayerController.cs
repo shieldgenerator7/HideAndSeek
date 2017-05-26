@@ -24,6 +24,7 @@ public class PlayerController : NetworkBehaviour {
             Cursor.visible = false;
             GameObject cam = Instantiate(cameraPrefab);
             cam.transform.parent = transform;
+            cam.transform.localPosition = Vector3.zero;
             viewCamera = cam.GetComponent<Camera>();
             viewCamera.tag = "MainCamera";
             rb = GetComponent<Rigidbody>();
