@@ -13,6 +13,7 @@ public class PlayerController : NetworkBehaviour {
     private Camera viewCamera;
 
     private Rigidbody rb;
+    private CapsuleCollider bc;
     private float distToGround;
     private float jumpTime = 0;
     
@@ -24,10 +25,12 @@ public class PlayerController : NetworkBehaviour {
             Cursor.visible = false;
             GameObject cam = Instantiate(cameraPrefab);
             cam.transform.parent = transform;
+            cam.transform.localPosition = Vector3.zero;
             viewCamera = cam.GetComponent<Camera>();
             viewCamera.tag = "MainCamera";
             rb = GetComponent<Rigidbody>();
-            distToGround = GetComponent<BoxCollider>().bounds.extents.y;
+            bc = GetComponent<CapsuleCollider>();
+            distToGround = bc.bounds.extents.y;
         }
 	}
 	
@@ -36,9 +39,9 @@ public class PlayerController : NetworkBehaviour {
     {
         if (isLocalPlayer)
         {
-            float moveZ = Input.GetAxis("Vertical") * Time.deltaTime * speed;
-            float moveX = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
-            transform.Translate(moveX, 0, moveZ);
+            float moveZ = Input.GetAxis("Vertical") * speed * rb.mass;
+            float moveX = Input.GetAxis("Horizontal") * speed * rb.mass;
+            rb.AddRelativeForce(moveX, 0, moveZ);
             float rotX = Input.GetAxis("Mouse X") * Time.deltaTime * rotSpeed;
             float rotY = Input.GetAxis("Mouse Y") * Time.deltaTime * rotSpeed;
             transform.Rotate(0, rotX, 0);//yes, apparently it's correct to switch the X and Y here
@@ -63,7 +66,8 @@ public class PlayerController : NetworkBehaviour {
     //2017-05-25: copied from an answer by aldonaletto: http://answers.unity3d.com/questions/196381/how-do-i-check-if-my-rigidbody-player-is-grounded.html
     bool isGrounded()
     {
-        float buffer = 0.1f;
-        return Physics.Raycast(transform.position + (Vector3.down * (distToGround - 0.01f)), Vector3.down, buffer);
+        float buffer = 0.2f;
+        Vector3 extents = bc.bounds.extents;
+        return Physics.CheckBox(transform.position + (Vector3.down * (distToGround + buffer)), new Vector3(extents.x, buffer / 2, extents.z));
     }
 }
