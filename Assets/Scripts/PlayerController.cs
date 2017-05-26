@@ -53,10 +53,6 @@ public class PlayerController : NetworkBehaviour {
                 {
                     rb.AddForce(0, jumpForce*rb.mass, 0);
                 }
-                else
-                {
-                    Debug.Log("In Air! jumpTime: "+jumpTime+"; Time: "+Time.time);
-                }
             }
         }
         if (Input.GetKeyDown(KeyCode.Escape))
