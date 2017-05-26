@@ -13,6 +13,7 @@ public class PlayerController : NetworkBehaviour {
     private Camera viewCamera;
 
     private Rigidbody rb;
+    private BoxCollider bc;
     private float distToGround;
     private float jumpTime = 0;
     
@@ -28,6 +29,7 @@ public class PlayerController : NetworkBehaviour {
             viewCamera = cam.GetComponent<Camera>();
             viewCamera.tag = "MainCamera";
             rb = GetComponent<Rigidbody>();
+            bc = GetComponent<BoxCollider>();
             distToGround = GetComponent<BoxCollider>().bounds.extents.y;
         }
 	}
@@ -64,7 +66,8 @@ public class PlayerController : NetworkBehaviour {
     //2017-05-25: copied from an answer by aldonaletto: http://answers.unity3d.com/questions/196381/how-do-i-check-if-my-rigidbody-player-is-grounded.html
     bool isGrounded()
     {
-        float buffer = 0.1f;
-        return Physics.Raycast(transform.position + (Vector3.down * (distToGround - 0.01f)), Vector3.down, buffer);
+        float buffer = 0.2f;
+        Vector3 extents = bc.bounds.extents;
+        return Physics.CheckBox(transform.position + (Vector3.down * (distToGround + buffer)), new Vector3(extents.x, buffer / 2, extents.z));
     }
 }
