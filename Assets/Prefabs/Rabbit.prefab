@@ -240,7 +240,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 3
   rotSpeed: 100
-  jumpForce: 200
+  jumpForce: 15
+  jumpDuration: 0.25
   cameraPrefab: {fileID: 1620561361524654, guid: f5c7f7f044a647a4aa2200253adc711e,
     type: 2}
 --- !u!114 &114338022097394730

@@ -7,15 +7,15 @@ public class PlayerController : NetworkBehaviour {
 
     public float speed = 3.0f;
     public float rotSpeed = 7.0f;
-    public float jumpForce = 10.0f;
+    public float jumpForce = 20.0f;
+    public float jumpDuration = 0.5f;//how long a jump can have effect
     public GameObject cameraPrefab;
     private Camera viewCamera;
 
     private Rigidbody rb;
     private float distToGround;
     private float jumpTime = 0;
-    private float jumpDuration = 1.0f;//how long a jump can have effect
-
+    
 	// Use this for initialization
 	void Start () {
         if (isLocalPlayer)
@@ -43,10 +43,14 @@ public class PlayerController : NetworkBehaviour {
             float rotY = Input.GetAxis("Mouse Y") * Time.deltaTime * rotSpeed;
             transform.Rotate(0, rotX, 0);//yes, apparently it's correct to switch the X and Y here
             viewCamera.transform.Rotate(-rotY, 0, 0);
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space))
             {
-                if (isGrounded()) {
-                    Debug.Log("Grounded!");
+                if (isGrounded())
+                {
+                    jumpTime = Time.time + jumpDuration;
+                }
+                if (jumpTime > Time.time)
+                {
                     rb.AddForce(0, jumpForce*rb.mass, 0);
                 }
                 else
@@ -59,7 +63,7 @@ public class PlayerController : NetworkBehaviour {
     //2017-05-25: copied from an answer by aldonaletto: http://answers.unity3d.com/questions/196381/how-do-i-check-if-my-rigidbody-player-is-grounded.html
     bool isGrounded()
     {
-        float buffer = 0.2f;
-        return Physics.Raycast(transform.position+(Vector3.down*(distToGround)), Vector3.down, buffer);
+        float buffer = 0.1f;
+        return Physics.Raycast(transform.position + (Vector3.down * (distToGround - 0.01f)), Vector3.down, buffer);
     }
 }
