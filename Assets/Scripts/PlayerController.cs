@@ -11,11 +11,12 @@ public class PlayerController : NetworkBehaviour {
     public float jumpDuration = 0.5f;//how long a jump can have effect
     public GameObject cameraPrefab;
     private Camera viewCamera;
-
-    private Rigidbody rb;
+    
     private CapsuleCollider bc;
+    private CharacterController charCtr;
     private float distToGround;
     private float jumpTime = 0;
+    private static Vector3 gravityVector = (Vector3.down * 9.81f);
     
 	// Use this for initialization
 	void Start () {
@@ -28,7 +29,7 @@ public class PlayerController : NetworkBehaviour {
             cam.transform.localPosition = Vector3.zero;
             viewCamera = cam.GetComponent<Camera>();
             viewCamera.tag = "MainCamera";
-            rb = GetComponent<Rigidbody>();
+            charCtr = GetComponent<CharacterController>();
             bc = GetComponent<CapsuleCollider>();
             distToGround = bc.bounds.extents.y;
         }
@@ -39,24 +40,29 @@ public class PlayerController : NetworkBehaviour {
     {
         if (isLocalPlayer)
         {
-            float moveZ = Input.GetAxis("Vertical") * speed * rb.mass;
-            float moveX = Input.GetAxis("Horizontal") * speed * rb.mass;
-            rb.AddRelativeForce(moveX, 0, moveZ);
-            float rotX = Input.GetAxis("Mouse X") * Time.deltaTime * rotSpeed;
-            float rotY = Input.GetAxis("Mouse Y") * Time.deltaTime * rotSpeed;
-            transform.Rotate(0, rotX, 0);//yes, apparently it's correct to switch the X and Y here
-            viewCamera.transform.Rotate(-rotY, 0, 0);
+            //Movement
+            float moveZ = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+            float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+            Vector3 moveDirection = transform.TransformDirection(new Vector3(moveX, 0, moveZ));
+            
             if (Input.GetKey(KeyCode.Space))
             {
-                if (isGrounded())
+                if (charCtr.isGrounded)
                 {
                     jumpTime = Time.time + jumpDuration;
                 }
                 if (jumpTime > Time.time)
                 {
-                    rb.AddForce(0, jumpForce*rb.mass, 0);
+                    moveDirection.y += jumpForce*Time.deltaTime;
                 }
             }
+            moveDirection.y += gravityVector.y*Time.deltaTime;
+            charCtr.Move(moveDirection);
+            //Rotation
+            float rotX = Input.GetAxis("Mouse X") * Time.deltaTime * rotSpeed;
+            float rotY = Input.GetAxis("Mouse Y") * Time.deltaTime * rotSpeed;
+            transform.Rotate(0, rotX, 0);//yes, apparently it's correct to switch the X and Y here
+            viewCamera.transform.Rotate(-rotY, 0, 0);
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
