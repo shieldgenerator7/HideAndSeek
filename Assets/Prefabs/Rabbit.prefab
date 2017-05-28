@@ -211,10 +211,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18728dcf9a2d3844086738ed7f280406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSeeker: 0
   speed: 10
   rotSpeed: 100
   jumpForce: 25
   jumpDuration: 0.2
+  stunVisionPrefab: {fileID: 1226166626253244, guid: 25879f605d6702049aca0d76bc622c0f,
+    type: 2}
   cameraPrefab: {fileID: 1620561361524654, guid: f5c7f7f044a647a4aa2200253adc711e,
     type: 2}
 --- !u!114 &114338022097394730
